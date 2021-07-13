@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"Dylan Graham"
+	],
+	"copyright": "Copyright (C) 2021, Dylan Graham trading under MOXANE",
+	"description": "Automotive common code for MOXANE",
+	"license": "proprietary",
+	"name": "autocommon"
+}

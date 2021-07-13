@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/autocommon
+autocommon.so
+autocommon.dylib
+autocommon.dll
+autocommon.a
+autocommon.lib
+autocommon-test-*
+*.exe
+*.o
+*.obj
+*.lst
