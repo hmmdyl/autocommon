@@ -13,3 +13,5 @@ autocommon-test-*
 *.o
 *.obj
 *.lst
+*.suo
+*.vs

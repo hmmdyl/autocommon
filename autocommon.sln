@@ -1,0 +1,16 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{69B6F9E2-B0AC-4926-8152-BF2F057D957E}") = "autocommon", ".dub/autocommon.visualdproj", "{60B6F570-6A32-479E-95B4-E466375D755C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		debug|x64 = debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{60B6F570-6A32-479E-95B4-E466375D755C}.debug|x64.ActiveCfg = debug|x64
+		{60B6F570-6A32-479E-95B4-E466375D755C}.debug|x64.Build.0 = debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
