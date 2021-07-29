@@ -23,23 +23,26 @@ mixin template canReadFunc()
 	/// Read this descriptive CAN packet from a generic `CanBusPacket`
 	static bool readFromCanPacket(const ref CanBusPacket p, out TThis ot) @trusted
 	{
-		if(r.id != ot.id) return 
+		if(p.id != ot.id) return 
 			false;
 
-		ot = fromByteArr!TThis(p.payload[0..8]);
+		//ot = fromByteArr!(typeof(this))(p.payload[0..8]);
+		ubyte[] resultArr = (*cast(ubyte[TThis.sizeof]*)&ot);
+		foreach(b; 0 .. TThis.sizeof) 
+			resultArr[b] = p.payload[b];
 		return true;
 	}
 
 	/// Read this descriptive CAN packet from a generic `CanBusPacket`
 	bool readFromCanPacket(const ref CanBusPacket p) @safe
 	{
-		return read(p, this);
+		return readFromCanPacket(p, this);
 	}
 
 	/// Instantiate this descriptive CAN packet from a generic `CanBusPacket`
 	this(const ref CanBusPacket p) @safe
 	{
-		read(p, this);
+		readFromCanPacket(p, this);
 	}
 }
 
@@ -48,18 +51,18 @@ mixin template canWriteFunc()
 	alias TThis = typeof(this);
 
 	/// Write this descriptive CAN packet to a generic `CanBusPacket`
-	static void writeToCanPacket(ref CanBusPacket p, out TThis ot) @trusted
+	static void writeToCanPacket(out CanBusPacket p, const ref TThis ot) @trusted
 	{
 		p.id = TThis.id;
-		p.payload[0 .. TThis.sizeof] = toByteArr!TThis(ot);
+		p.payload[] = 0;
+		p.payload[0 .. TThis.sizeof] = (*cast(ubyte[TThis.sizeof]*)&ot)[0 .. TThis.sizeof];
 		p.length = TThis.sizeof;
-		return true;
 	}
 
 	/// Write this descriptive CAN packet to a generic `CanBusPacket`
 	void writeToCanPacket(out CanBusPacket p) @safe
 	{
-		write(p, this);
+		writeToCanPacket(p, this);
 	}
 }
 
@@ -74,11 +77,9 @@ mixin template packetHeader(ushort pid)
 	mixin canReadFunc;
 	mixin canWriteFunc;
 	mixin verifySizeConstraint;
-
-	align(1):
 }
 
-private mixin template verifySizeConstraint()
+mixin template verifySizeConstraint()
 {
 	static assert(typeof(this).sizeof <= canbusMaxPacketSize, 
 				  "Size must not exceed canbusMaxPacketSize");
@@ -87,8 +88,8 @@ private mixin template verifySizeConstraint()
 /// Verify that the current type is same size as `targetSize`
 mixin template verifySizeExact(byte targetSize)
 {
-	static assert(typeof(this).sizeof == size,
-				  "Size of this must be equal to targetSize");
+	static assert(typeof(this).sizeof == targetSize,
+				  "Size of this must be equal to targetSize for " ~ typeof(this).stringof);
 }
 
 static struct CanBus
@@ -122,7 +123,7 @@ static struct CanBus
 	}
 
 	/// Transmit a CAN message
-	static bool tx(const ref CanBusPacket pkt) @trusted
+	static bool tx(ref CanBusPacket pkt) @trusted
 	{
 		return cast(bool)cll_canTx(pkt.id, pkt.length, &pkt.payload[0]);
 	}

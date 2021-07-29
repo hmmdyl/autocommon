@@ -65,16 +65,16 @@ struct Optional(T)
 		return result;
 	}
 
-	@property bool isNull() const { return !payloadExists; }
+	@property bool isNull() const { return !exists; }
 
 	/// Returns a pointer to the data, or null
 	T* unwrapOrNull()
 	{ return isNull ? null : &payload; }
 
 	/// Returns a pointer to the data, or `orelse`
-	T* unwrapOrElse(ref T orelse)
+	/+T* unwrapOrElse(ref T orelse)
 	{
 		if(isNull) return &orelse;
 		else return &payload;
-	}
+	}+/
 }

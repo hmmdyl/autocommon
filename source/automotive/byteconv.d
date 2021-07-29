@@ -13,7 +13,7 @@ ubyte[] toByteArr(T)(ref T item) pure if(!isPointer!T){
 	return (*cast(ubyte[T.sizeof]*)&item)[0 .. T.sizeof];
 }
 
-T fromByteArr(T)(ubyte[] item) pure {
+T fromByteArr(T)(ubyte[] item) {
 	static assert(!isPointer!T);
 
 	T result;
