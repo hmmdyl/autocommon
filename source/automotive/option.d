@@ -28,11 +28,11 @@ struct Result(T, E)
 		payloadExists = false;
 	}
 
-	@property bool isError() const { return !payloadExists; }
-	@property E error() const { return error_; }
+	@property isError() const { return !payloadExists; }
+	@property error() const { return error_; }
 
 	/// Return a pointer to the data, or if error, to `orelse`
-	T* unwrapOrElse(ref T orelse) const 
+	T* unwrapOrElse(return ref T orelse) 
 	{
 		if(isError)
 			return &orelse;
@@ -42,6 +42,17 @@ struct Result(T, E)
 	/// Return a pointer to the data, or if error, a null
 	T* unwrapOrNull() 
 	{ return isError ? null : &payload; }
+
+	auto match(alias onResult, alias onError)()
+	{
+		if(isError)
+		{
+			static if(is(ReturnType!onError == noreturn))
+				onError(error);
+			else return onError(error);
+		}
+        else onResult(payload);
+	}
 }
 
 /// An `Optional!T` can either be a `T` type, or `null`
@@ -72,9 +83,20 @@ struct Optional(T)
 	{ return isNull ? null : &payload; }
 
 	/// Returns a pointer to the data, or `orelse`
-	/+T* unwrapOrElse(ref T orelse)
+	T* unwrapOrElse(return ref T orelse)
 	{
 		if(isNull) return &orelse;
 		else return &payload;
-	}+/
+	}
+
+	auto match(alias onResult, alias onNull)()
+    {
+        if(exists) return onResult(payload);
+        else
+        {
+            static if(is(ReturnType!onNull == noreturn))
+                onNull();
+            else return onNull();
+        }
+    }
 }

@@ -3,6 +3,8 @@ module automotive.polymorphic;
 import std.meta : Stride, AliasSeq;
 import std.traits : ReturnType, Parameters;
 
+@safe:
+
 template polymorph(Args...)
 {
 	struct polymorph
