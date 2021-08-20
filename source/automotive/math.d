@@ -1,5 +1,7 @@
 module automotive.math;
 
+@safe:
+
 import std.traits : isNumeric;
 
 /// Clamp between `min` and `max`

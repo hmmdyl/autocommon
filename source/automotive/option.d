@@ -83,9 +83,9 @@ struct Optional(T)
 	{ return isNull ? null : &payload; }
 
 	/// Returns a pointer to the data, or `orelse`
-	T* unwrapOrElse(return ref T orelse)
+	T* unwrapOrElse(return ref T orElse)
 	{
-		if(isNull) return &orelse;
+		if(isNull) return &orElse;
 		else return &payload;
 	}
 

@@ -3,6 +3,8 @@ module automotive.interlink.contract;
 import automotive.interlink.primitive;
 import automotive.interlink.packet;
 
+@safe:
+
 /+
 Interlink contracts.
 
