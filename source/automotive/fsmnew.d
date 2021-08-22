@@ -40,6 +40,8 @@ struct FiniteStateMachine(TEnum, alias TContext, Args...) {
     @property current() const { return current_; }
     @property next() const { return next_; }
 
+    @disable this();
+
     static if(!ContextIsNull)
     {
         private TContext context_;

@@ -101,13 +101,13 @@ struct Optional(T)
 	alias uwNull = unwrapOrNull;
 
 	/// Returns a pointer to the data, or `orelse`
-	T* unwrapOrElse(return ref T orElse) return
+	/+T* unwrapOrElse(return ref T orElse) return
 	{
 		if(isNull) return &orElse;
 		else return &payload;
 	}
 	/// ditto
-	alias uwElse = unwrapOrElse;
+	alias uwElse = unwrapOrElse;+/
 }
 
 /++ Perform pattern match against result or null 
