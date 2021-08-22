@@ -37,7 +37,7 @@ private mixin template FsmTypeCheck(TEnum, Handlers...)
 	}
 }
 
-struct FiniteStateMachine(TEnum, Handlers...)
+deprecated("Use automotive.fsmnew") struct FiniteStateMachine(TEnum, Handlers...)
 {
 	mixin FsmTypeCheck!(TEnum, Handlers);
 
@@ -82,7 +82,7 @@ private mixin template ContextFsmTypeCheck(TContext, Handlers...)
 	}
 }
 
-struct ContextFiniteStateMachine(TEnum, TContext, Handlers...)
+deprecated("Use automotive.fsmnew") struct ContextFiniteStateMachine(TEnum, TContext, Handlers...)
 {
 	mixin FsmTypeCheck!(TEnum, Handlers);
 	mixin ContextFsmTypeCheck!(TContext, Handlers);
