@@ -38,11 +38,17 @@ struct Result(T, E)
 			return &orelse;
 		return &payload;
 	}
+	alias uwElse = unwrapOrElse;
 
 	/// Return a pointer to the data, or if error, a null
 	T* unwrapOrNull() 
 	{ return isError ? null : &payload; }
+	alias uwNull = unwrapOrNull;
 
+	/++ Perform pattern match against result or error 
+	+ params:
+	+		onResult = function or lambda to call if result exists (must accept result as param)
+	+		onError = function or lambda to call if error exists (must accept error as param). Allows noreturn ++/
 	auto match(alias onResult, alias onError)()
 	{
 		if(isError)
@@ -78,9 +84,18 @@ struct Optional(T)
 
 	@property bool isNull() const { return !exists; }
 
+	/// Returns a pointer to the data, or panics if null
+	T* unwrapOrPanic()
+	in(!isNull, typeof(this).stringof ~ " was null")
+	{ return &payload; }
+	/// ditto
+	alias uw = unwrapOrPanic;
+
 	/// Returns a pointer to the data, or null
 	T* unwrapOrNull()
 	{ return isNull ? null : &payload; }
+	/// ditto
+	alias uwNull = unwrapOrNull;
 
 	/// Returns a pointer to the data, or `orelse`
 	T* unwrapOrElse(return ref T orElse)
@@ -88,7 +103,13 @@ struct Optional(T)
 		if(isNull) return &orElse;
 		else return &payload;
 	}
+	/// ditto
+	alias uwElse = unwrapOrElse;
 
+	/++ Perform pattern match against result or null 
+	  + params:
+	  +		onResult = function or lambda to call if result exists (must accept result as param)
+	  +		onNull = function or lambda to call if null. Allows noreturn ++/
 	auto match(alias onResult, alias onNull)()
     {
         if(exists) return onResult(payload);
