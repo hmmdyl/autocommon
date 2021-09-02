@@ -20,7 +20,7 @@ package
 	}
 	extern(C) nothrow @nogc pure @system
 	{
-		/+version(Windows)
+		version(unittest)
 		{
 			/// Transmit a CAN frame
 			int cll_canTx(ushort id, int length, ubyte* data) { return 0; }
@@ -29,14 +29,14 @@ package
 			/// Get first message in queue
 			int cll_canRx(ushort* id, int* len, ubyte* arr) {return 0;}
 		}
-		else+/
-		//{
+		else
+		{
 			/// Transmit a CAN frame
 			int cll_canTx(ushort id, int length, ubyte* data);
 			/// Get number of CAN messages available
 			int cll_canRxPoll();
 			/// Get first message in queue
 			int cll_canRx(ushort* id, int* len, ubyte* arr);
-		//}
+		}
 	}
 }

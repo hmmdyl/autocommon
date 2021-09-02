@@ -10,6 +10,8 @@ import std.traits;
 ///     E: type for error
 struct Result(T, E)
 {
+	private alias E_ = E;
+
 	private T payload;
 	private E error_;
 	private bool payloadExists;
@@ -34,13 +36,13 @@ struct Result(T, E)
 	@property error() const { return error_; }
 
 	/// Return a pointer to the data, or if error, to `orelse`
-	T* unwrapOrElse(return ref T orelse) 
+	/+T* unwrapOrElse(return ref T orelse) 
 	{
 		if(isError)
 			return &orelse;
 		return &payload;
 	}
-	alias uwElse = unwrapOrElse;
+	alias uwElse = unwrapOrElse;+/
 
 	/// Return a pointer to the data, or if error, a null
 	T* unwrapOrNull() 
@@ -61,7 +63,7 @@ auto match(alias onResult, alias onError, T)(return ref T t)
 			onError(t.error);
 		else return onError(t.error);
 	}
-	else onResult(t.payload);
+	else return onResult(t.payload);
 }
 
 /// An `Optional!T` can either be a `T` type, or `null`

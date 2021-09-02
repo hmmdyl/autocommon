@@ -6,5 +6,5 @@
 	"description": "Automotive common code for MOXANE",
 	"license": "proprietary",
 	"name": "autocommon",
-	"targetType": "sourceLibrary"
+	"targetType": "sourceLibrary",
 }

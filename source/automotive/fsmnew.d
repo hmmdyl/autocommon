@@ -32,7 +32,7 @@ template FsmHandlerEL(alias TEnumMember, alias THandler, alias TOnEnter, alias T
 private enum TIsNull(alias T) = is(typeof(T is null));
 
 struct FiniteStateMachine(TEnum, alias TContext, Args...) {  
-    static assert(is(TContext == struct) || is(typeof(TContext is null)), "TContext must be struct or null");
+    static assert(is(TContext == struct) || is(TContext == U*, U) || is(typeof(TContext is null)), "TContext must be struct, pointer, or null");
     private enum ContextIsNull = is(typeof(TContext is null));
 
 	private TEnum previous_, current_, next_;
@@ -45,17 +45,29 @@ struct FiniteStateMachine(TEnum, alias TContext, Args...) {
     static if(!ContextIsNull)
     {
         private TContext context_;
-        @property ref TContext context() return { return context_; }
-        @property void context(const ref TContext newContext) { context_ = newContext; }
+        static if(is(TContext == struct))
+		{
+            @property ref TContext context() return { return context_; }
+            @property void context(const ref TContext newContext) { context_ = newContext; }
 
-        this(TContext context, TEnum initial)
-        {
-            this.context_ = context;
-            this.previous_ = initial;
-            this.current_ = initial;
-            callEL!true(true);
+			this(TContext context, TEnum initial)
+			{
+				this.context_ = context;
+				this.previous_ = initial;
+				this.current_ = initial;
+				callEL!true(true);
 
+			}
         }
+        else
+		{
+            this(TEnum initial)
+			{
+				this.previous_ = initial;
+				this.current_ = initial;
+				callEL!true(true);
+			}
+		}
     }
     else
     {
@@ -142,4 +154,10 @@ struct FiniteStateMachine(TEnum, alias TContext, Args...) {
         if(next_ != current_)
             callEL!false;
     }
+
+    void runForever()
+	{
+        while(true)
+            tick;
+	}
 }

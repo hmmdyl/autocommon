@@ -1,6 +1,7 @@
 module automotive.table;
 
 import std.traits;
+import automotive.math;
 
 @safe:
 
@@ -49,7 +50,7 @@ struct Table2D(TVal, TAxis, ubyte N)
 		int selectedBin = -1;
 		foreach(i, n; axis)
 			if(n == a)
-				selectedBin = i;
+				selectedBin = cast(int)i;
 
 		if(selectedBin < 0)
 			return false;
