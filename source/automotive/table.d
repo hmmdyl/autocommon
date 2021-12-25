@@ -14,6 +14,7 @@ struct Table2D(TVal, TAxis, ubyte N)
 	if(isNumeric!TVal && isNumeric!TAxis && N > 0)
 {
 	enum size_t numBytes = TVal.sizeof * cast(size_t)N + TAxis.sizeof * cast(size_t)N;
+	enum isTable = true;
 
 	private TAxis previousAxis;
 	private TVal previousVal;
@@ -185,6 +186,7 @@ if(isNumeric!TVal && isNumeric!TxAxis && isNumeric!TyAxis
    && SX > 0 && SY > 0)
 {
 	enum size_t numBytes = (TVal.sizeof * SX * SY) + (TxAxis.sizeof * SX) + (TyAxis.sizeof * SY);
+	enum isTable = true;
 
 	private TxAxis previousX;
 	private TyAxis previousY;
