@@ -20,8 +20,8 @@ struct Table2D(TVal, TAxis, ubyte N)
 	private TAxis previousAxis;
 	private TVal previousVal;
 
-	TAxis[N] axis;
-	TVal[N] values;
+	private TAxis[N] axis;
+	private TVal[N] values;
 
 	@property TAxis axisMin() const { return axis[0]; }
 	@property TAxis axisMax() const { return axis[N - 1]; }
@@ -198,9 +198,9 @@ if(isNumeric!TVal && isNumeric!TxAxis && isNumeric!TyAxis
 
 	private TxAxis[SX] xAxis;
 	private TyAxis[SY] yAxis;
-	private TVal[SY][SX] values;
+	private TVal[SY * SX] values;
 
-	private size_t flatten(ubyte x, ubyte y)
+	private size_t flatten(size_t x, size_t y)
 	{
 		return y * SX + x;
 	}
@@ -219,22 +219,22 @@ if(isNumeric!TVal && isNumeric!TxAxis && isNumeric!TyAxis
 
 		if(x == xAxis[0] && y == yAxis[0])
 		{
-			previousVal = values[0][0];
+			previousVal = values[flatten(0, 0)];
 			return previousVal;
 		}
 		if(x == xAxis[SX-1] && y == yAxis[0])
 		{
-			previousVal = values[SX-1][0];
+			previousVal = values[flatten(SX-1, 0)];
 			return previousVal;
 		}
 		if(x == xAxis[0] && y == yAxis[SY-1])
 		{
-			previousVal = values[0][SY-1];
+			previousVal = values[flatten(0, SY-1)];
 			return previousVal;
 		}
 		if(x == xAxis[SX-1] && y == yAxis[SY-1])
 		{
-			previousVal = values[SX-1][SY-1];
+			previousVal = values[flatten(SX-1, SY-1)];
 			return previousVal;
 		}
 
@@ -261,25 +261,25 @@ if(isNumeric!TVal && isNumeric!TxAxis && isNumeric!TyAxis
 		immutable float xmin = xAxis[binx], xmax = xAxis[binx+1],
 			ymin = yAxis[biny], ymax = yAxis[biny+1];
 
-		float z_x0y0 = values[binx][biny];
+		float z_x0y0 = values[flatten(binx, biny)];
 		if(x == xmin && y == ymin)
 		{
 			previousVal = cast(TVal)z_x0y0;
 			return previousVal;
 		}
-		float z_x1y0 = values[binx+1][biny];
+		float z_x1y0 = values[flatten(binx+1, biny)];
 		if(x == xmax && y == ymin)
 		{
 			previousVal = cast(TVal)z_x1y0;
 			return previousVal;
 		}
-		float z_x0y1 = values[binx][biny+1];
+		float z_x0y1 = values[flatten(binx, biny+1)];
 		if(x == xmin && y == ymax)
 		{
 			previousVal = cast(TVal)z_x0y1;
 			return previousVal;
 		}
-		float z_x1y1 = values[binx+1][biny+1];
+		float z_x1y1 = values[flatten(binx+1, biny+1)];
 		if(x == xmax && y == ymax)
 		{
 			previousVal = cast(TVal)z_x1y1;
