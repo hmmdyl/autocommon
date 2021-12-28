@@ -16,11 +16,12 @@ struct Table2D(TVal, TAxis, ubyte N)
 	enum size_t numBytes = TVal.sizeof * cast(size_t)N + TAxis.sizeof * cast(size_t)N;
 	enum isTable = true;
 
+	private bool previouslySampled;
 	private TAxis previousAxis;
 	private TVal previousVal;
 
-	private TAxis[N] axis;
-	private TVal[N] values;
+	TAxis[N] axis;
+	TVal[N] values;
 
 	@property TAxis axisMin() const { return axis[0]; }
 	@property TAxis axisMax() const { return axis[N - 1]; }
@@ -65,7 +66,9 @@ struct Table2D(TVal, TAxis, ubyte N)
 		// clamp input to be between axis start and end
 		clampRef(input,	axisMin, axisMax);
 
-		if(input == previousAxis) return previousVal;
+		scope(exit) previouslySampled = true;
+		if(previouslySampled)
+			if(input == previousAxis) return previousVal;
 		previousAxis = input;
 
 		// if input exact axis min or max, return that value
@@ -188,6 +191,7 @@ if(isNumeric!TVal && isNumeric!TxAxis && isNumeric!TyAxis
 	enum size_t numBytes = (TVal.sizeof * SX * SY) + (TxAxis.sizeof * SX) + (TyAxis.sizeof * SY);
 	enum isTable = true;
 
+	private bool previouslySampled;
 	private TxAxis previousX;
 	private TyAxis previousY;
 	private TVal previousVal;
@@ -206,8 +210,10 @@ if(isNumeric!TVal && isNumeric!TxAxis && isNumeric!TyAxis
 		clampRef(x, xAxis[0], xAxis[SX-1]);
 		clampRef(y, yAxis[0], yAxis[SY-1]);
 
-		if(x == previousX && y == previousY)
-			return previousVal;
+		scope(exit) previouslySampled = true;
+		if(previouslySampled)
+			if(x == previousX && y == previousY)
+				return previousVal;
 		previousX = x;
 		previousY = y;
 
